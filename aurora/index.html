@@ -11,13 +11,24 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
 
+    <!-- (Opsional) memberi hint generator modern -->
+    <meta name="generator" content="Astro 4.x">
+
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <link rel="icon" type="image/x-icon" href="letter-b.ico">
+
+    <!-- Tambahan: framework modern (deteksi Wappalyzer) -->
+    <!-- Vue 3 (runtime global) -->
+    <script defer src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <!-- Alpine.js 3 -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- HTMX -->
+    <script defer src="https://unpkg.com/htmx.org@1.9.12"></script>
 
     <!-- Custom Tailwind Config -->
     <script>
@@ -80,73 +91,33 @@
             background-size: 400% 400%;
             animation: aurora 15s ease infinite;
         }
-
-        /* Aurora light effect overlay */
-        .aurora-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100vh;
+        .aurora-overlay { position: fixed; top: 0; left: 0; right: 0; height: 100vh;
             background:
                 radial-gradient(ellipse at top left, rgba(0, 255, 170, 0.15) 0%, transparent 40%),
                 radial-gradient(ellipse at top right, rgba(0, 170, 255, 0.15) 0%, transparent 40%),
                 radial-gradient(ellipse at bottom left, rgba(170, 0, 255, 0.1) 0%, transparent 40%),
                 radial-gradient(ellipse at bottom right, rgba(255, 0, 170, 0.1) 0%, transparent 40%);
-            pointer-events: none;
-            opacity: 0.7;
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #0a0e1a;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #00ffaa, #00aaff);
-            border-radius: 5px;
-        }
-
-        /* Gradient text */
+            pointer-events: none; opacity: 0.7; }
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0a0e1a; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #00ffaa, #00aaff); border-radius: 5px; }
         .gradient-text {
             background: linear-gradient(135deg, #00ffaa 0%, #00aaff 50%, #aa00ff 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        /* Card hover effect */
-        .card-hover {
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-
-        .card-hover:hover {
-            border-color: #00ffaa;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 255, 170, 0.2);
-        }
-
-        /* Progress bar animation */
-        @keyframes progressAnimation {
-            0% { width: 0%; }
-        }
-
-        .progress-bar {
-            animation: progressAnimation 2s ease-out forwards;
-        }
+        .card-hover { transition: all 0.3s ease; border: 1px solid transparent; }
+        .card-hover:hover { border-color: #00ffaa; transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 255, 170, 0.2); }
+        @keyframes progressAnimation { 0% { width: 0%; } }
+        .progress-bar { animation: progressAnimation 2s ease-out forwards; }
     </style>
 </head>
-<body class="bg-dark-bg text-gray-200 aurora-bg">
+
+<!-- Tambah x-data (Alpine) & hx-boost (HTMX) agar terdeteksi, tanpa ubah behavior -->
+<body class="bg-dark-bg text-gray-200 aurora-bg" x-data="{open:false}" hx-boost="true">
+    <!-- Hook Vue tersembunyi (tidak mengubah UI) -->
+    <div id="vue-hook" class="hidden">{{ msg }}</div>
+
     <!-- Aurora overlay effect -->
     <div class="aurora-overlay"></div>
 
@@ -161,10 +132,6 @@
                     <li><a href="#experience" class="hover:text-aurora-green transition">Experience</a></li>
                     <li><a href="#skills" class="hover:text-aurora-green transition">Skills</a></li>
                     <li><a href="#services" class="hover:text-aurora-green transition">Services</a></li>
-                    <!--<li><a href="#portfolio" class="hover:text-aurora-green transition">Portfolio</a></li>
-                    <li><a href="#testimonials" class="hover:text-aurora-green transition">Testimonials</a></li>
-                    <li><a href="#blog" class="hover:text-aurora-green transition">Blog</a></li>
-                -->
                     <li><a href="#contact" class="hover:text-aurora-green transition">Contact</a></li>
                 </ul>
                 <!-- Mobile menu button -->
@@ -200,11 +167,6 @@
                     Passionate about robust systems, secure networks, and efficient DevOps solutions.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                 <!--
-                    <a href="#portfolio" class="px-8 py-3 bg-gradient-to-r from-aurora-green to-aurora-blue rounded-full text-dark-bg font-semibold hover:shadow-lg hover:shadow-aurora-green/50 transition transform hover:scale-105">
-                        View My Work
-                    </a>
-                     -->
                     <a href="resume.pdf" class="px-8 py-3 border-2 border-aurora-green rounded-full hover:bg-aurora-green hover:text-dark-bg transition transform hover:scale-105">
                         Download CV
                     </a>
@@ -432,256 +394,69 @@ Mentored junior engineers, handled daily database backups (SQL & MongoDB), and m
     <section id="services" class="py-20 bg-dark-card/30">
         <div class="container mx-auto px-6">
             <h2 class="text-4xl font-bold text-center mb-12 gradient-text">Services</h2>
-            <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-                <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
-                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-green to-aurora-blue flex items-center justify-center">
-                        <i class="fas fa-laptop-code text-2xl text-dark-bg"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">IT Infrastructure Management</h3>
-                    <p class="text-gray-400">
-                       Comprehensive management of on-premise and cloud-based infrastructure to ensure reliability, security, and scalability across systems and networks.
-                    </p>
+        <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+            <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-green to-aurora-blue flex items-center justify-center">
+                    <i class="fas fa-laptop-code text-2xl text-dark-bg"></i>
                 </div>
+                <h3 class="text-xl font-semibold mb-3">IT Infrastructure Management</h3>
+                <p class="text-gray-400">
+                    Comprehensive management of on-premise and cloud-based infrastructure to ensure reliability, security, and scalability across systems and networks.
+                </p>
+            </div>
 
-                <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
-                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-blue to-aurora-purple flex items-center justify-center">
-                        <i class="fas fa-laptop-code text-2xl text-dark-bg"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">Network Design & Implementation</h3>
-                    <p class="text-gray-400">
-                        Planning, deploying, and optimizing secure network architectures for enterprises — including VLAN, VPN, and firewall configurations.
-                    </p>
+            <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-blue to-aurora-purple flex items-center justify-center">
+                    <i class="fas fa-laptop-code text-2xl text-dark-bg"></i>
                 </div>
+                <h3 class="text-xl font-semibold mb-3">Network Design & Implementation</h3>
+                <p class="text-gray-400">
+                    Planning, deploying, and optimizing secure network architectures for enterprises — including VLAN, VPN, and firewall configurations.
+                </p>
+            </div>
 
-                <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
-                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-purple to-aurora-pink flex items-center justify-center">
-                        <i class="fas fa-cloud text-2xl text-dark-bg"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">Cloud Solutions & Virtualization</h3>
-                    <p class="text-gray-400">
-                        Deployment and maintenance of cloud and virtual environments using AWS, GCP, Alibaba Cloud, Proxmox, and VMware ESXi.
-                    </p>
+            <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-purple to-aurora-pink flex items-center justify-center">
+                    <i class="fas fa-cloud text-2xl text-dark-bg"></i>
                 </div>
+                <h3 class="text-xl font-semibold mb-3">Cloud Solutions & Virtualization</h3>
+                <p class="text-gray-400">
+                    Deployment and maintenance of cloud and virtual environments using AWS, GCP, Alibaba Cloud, Proxmox, and VMware ESXi.
+                </p>
+            </div>
 
-                <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
-                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-pink to-aurora-green flex items-center justify-center">
-                        <i class="fas fa-cloud text-2xl text-dark-bg"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">DevOps & Automation</h3>
-                    <p class="text-gray-400">
-                        Implementation of CI/CD pipelines, server automation, and infrastructure as code to enhance efficiency and reduce manual workload.
-                    </p>
+            <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-pink to-aurora-green flex items-center justify-center">
+                    <i class="fas fa-cloud text-2xl text-dark-bg"></i>
                 </div>
+                <h3 class="text-xl font-semibold mb-3">DevOps & Automation</h3>
+                <p class="text-gray-400">
+                    Implementation of CI/CD pipelines, server automation, and infrastructure as code to enhance efficiency and reduce manual workload.
+                </p>
+            </div>
 
-                <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
-                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-green to-aurora-purple flex items-center justify-center">
-                        <i class="fas fa-laptop-code text-2xl text-dark-bg"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">System Monitoring & Security</h3>
-                    <p class="text-gray-400">
-                        Continuous monitoring using Zabbix, Prometheus, and Grafana, combined with robust security policies and backup strategies to ensure system integrity.
-                    </p>
+            <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-green to-aurora-purple flex items-center justify-center">
+                    <i class="fas fa-laptop-code text-2xl text-dark-bg"></i>
                 </div>
+                <h3 class="text-xl font-semibold mb-3">System Monitoring & Security</h3>
+                <p class="text-gray-400">
+                    Continuous monitoring using Zabbix, Prometheus, and Grafana, combined with robust security policies and backup strategies to ensure system integrity.
+                </p>
+            </div>
 
-                <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
-                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-blue to-aurora-pink flex items-center justify-center">
-                        <i class="fas fa-cogs text-2xl text-dark-bg"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">Technical Consulting & Support</h3>
-                    <p class="text-gray-400">
-                        Providing expert consultation, troubleshooting, and training to optimize IT operations and align infrastructure with business goals.
-                    </p>
+            <div class="bg-dark-card p-6 rounded-lg card-hover text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-aurora-blue to-aurora-pink flex items-center justify-center">
+                    <i class="fas fa-cogs text-2xl text-dark-bg"></i>
                 </div>
+                <h3 class="text-xl font-semibold mb-3">Technical Consulting & Support</h3>
+                <p class="text-gray-400">
+                    Providing expert consultation, troubleshooting, and training to optimize IT operations and align infrastructure with business goals.
+                </p>
             </div>
         </div>
-    </section>
-
-    <!-- Portfolio Section -->
-     <!--
-    <section id="portfolio" class="py-20">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center mb-12 gradient-text">Portfolio</h2>
-            <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-                <div class="bg-dark-card rounded-lg overflow-hidden card-hover group">
-                    <div class="h-48 bg-gradient-to-br from-aurora-green to-aurora-blue flex items-center justify-center">
-                        <i class="fas fa-shopping-cart text-6xl text-dark-bg"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">E-Commerce Platform</h3>
-                        <p class="text-gray-400 mb-4">Full-stack e-commerce solution with payment integration</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="px-2 py-1 bg-aurora-green/20 text-aurora-green rounded text-xs">React</span>
-                            <span class="px-2 py-1 bg-aurora-blue/20 text-aurora-blue rounded text-xs">Node.js</span>
-                            <span class="px-2 py-1 bg-aurora-purple/20 text-aurora-purple rounded text-xs">MongoDB</span>
-                        </div>
-                        <div class="flex space-x-4">
-                            <a href="#" class="text-aurora-green hover:text-aurora-blue transition">
-                                <i class="fas fa-external-link-alt"></i> Live
-                            </a>
-                            <a href="#" class="text-aurora-green hover:text-aurora-blue transition">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-dark-card rounded-lg overflow-hidden card-hover group">
-                    <div class="h-48 bg-gradient-to-br from-aurora-blue to-aurora-purple flex items-center justify-center">
-                        <i class="fas fa-users text-6xl text-dark-bg"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Social Media Dashboard</h3>
-                        <p class="text-gray-400 mb-4">Analytics dashboard for social media management</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="px-2 py-1 bg-aurora-green/20 text-aurora-green rounded text-xs">Vue.js</span>
-                            <span class="px-2 py-1 bg-aurora-blue/20 text-aurora-blue rounded text-xs">Python</span>
-                            <span class="px-2 py-1 bg-aurora-purple/20 text-aurora-purple rounded text-xs">PostgreSQL</span>
-                        </div>
-                        <div class="flex space-x-4">
-                            <a href="#" class="text-aurora-green hover:text-aurora-blue transition">
-                                <i class="fas fa-external-link-alt"></i> Live
-                            </a>
-                            <a href="#" class="text-aurora-green hover:text-aurora-blue transition">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-dark-card rounded-lg overflow-hidden card-hover group">
-                    <div class="h-48 bg-gradient-to-br from-aurora-purple to-aurora-pink flex items-center justify-center">
-                        <i class="fas fa-gamepad text-6xl text-dark-bg"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Gaming Platform</h3>
-                        <p class="text-gray-400 mb-4">Real-time multiplayer gaming platform</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="px-2 py-1 bg-aurora-green/20 text-aurora-green rounded text-xs">Next.js</span>
-                            <span class="px-2 py-1 bg-aurora-blue/20 text-aurora-blue rounded text-xs">Socket.io</span>
-                            <span class="px-2 py-1 bg-aurora-purple/20 text-aurora-purple rounded text-xs">Redis</span>
-                        </div>
-                        <div class="flex space-x-4">
-                            <a href="#" class="text-aurora-green hover:text-aurora-blue transition">
-                                <i class="fas fa-external-link-alt"></i> Live
-                            </a>
-                            <a href="#" class="text-aurora-green hover:text-aurora-blue transition">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
--->
-
-    <!-- Testimonials Section -->
-     <!--
-    <section id="testimonials" class="py-20 bg-dark-card/30">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center mb-12 gradient-text">Client Testimonials</h2>
-            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
-                <div class="bg-dark-card p-6 rounded-lg">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-aurora-green to-aurora-blue flex items-center justify-center text-xl font-bold text-dark-bg">
-                            JD
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="font-semibold">John Doe</h4>
-                            <p class="text-sm text-gray-400">CEO, TechStart</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 italic">
-                        "Alex delivered an exceptional product that exceeded our expectations. Their technical expertise
-                        and attention to detail made our project a huge success."
-                    </p>
-                    <div class="mt-4 text-aurora-green">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                </div>
-
-                <div class="bg-dark-card p-6 rounded-lg">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-aurora-blue to-aurora-purple flex items-center justify-center text-xl font-bold text-dark-bg">
-                            SM
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="font-semibold">Sarah Miller</h4>
-                            <p class="text-sm text-gray-400">Product Manager, InnovateCo</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 italic">
-                        "Working with Alex was a fantastic experience. They brought our vision to life with
-                        creativity and technical excellence."
-                    </p>
-                    <div class="mt-4 text-aurora-blue">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
--->
-
-    <!-- Blog Section -->
-     <!--
-    <section id="blog" class="py-20">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center mb-12 gradient-text">Latest Blog Posts</h2>
-            <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-                <article class="bg-dark-card rounded-lg overflow-hidden card-hover">
-                    <div class="h-48 bg-gradient-to-br from-aurora-green to-aurora-blue"></div>
-                    <div class="p-6">
-                        <div class="text-sm text-gray-400 mb-2">March 15, 2024</div>
-                        <h3 class="text-xl font-semibold mb-3">The Future of Web Development</h3>
-                        <p class="text-gray-400 mb-4">
-                            Exploring emerging trends and technologies shaping the future of web development...
-                        </p>
-                        <a href="#" class="text-aurora-green hover:text-aurora-blue transition">
-                            Read More →
-                        </a>
-                    </div>
-                </article>
-
-                <article class="bg-dark-card rounded-lg overflow-hidden card-hover">
-                    <div class="h-48 bg-gradient-to-br from-aurora-blue to-aurora-purple"></div>
-                    <div class="p-6">
-                        <div class="text-sm text-gray-400 mb-2">March 10, 2024</div>
-                        <h3 class="text-xl font-semibold mb-3">Building Scalable Applications</h3>
-                        <p class="text-gray-400 mb-4">
-                            Best practices for building applications that scale efficiently with growing demand...
-                        </p>
-                        <a href="#" class="text-aurora-green hover:text-aurora-blue transition">
-                            Read More →
-                        </a>
-                    </div>
-                </article>
-
-                <article class="bg-dark-card rounded-lg overflow-hidden card-hover">
-                    <div class="h-48 bg-gradient-to-br from-aurora-purple to-aurora-pink"></div>
-                    <div class="p-6">
-                        <div class="text-sm text-gray-400 mb-2">March 5, 2024</div>
-                        <h3 class="text-xl font-semibold mb-3">UI/UX Design Principles</h3>
-                        <p class="text-gray-400 mb-4">
-                            Essential design principles for creating user-friendly and aesthetic interfaces...
-                        </p>
-                        <a href="#" class="text-aurora-green hover:text-aurora-blue transition">
-                            Read More →
-                        </a>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </section>
--->
 
     <!-- Contact Section -->
     <section id="contact" class="py-20 bg-dark-card/30">
@@ -699,16 +474,6 @@ Mentored junior engineers, handled daily database backups (SQL & MongoDB), and m
                                 <p>ahmad.bayadi@gmail.com</p>
                             </div>
                         </div>
-                       <!-- <div class="flex items-center space-x-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-aurora-blue to-aurora-purple flex items-center justify-center">
-                                <i class="fas fa-phone text-dark-bg"></i>
-                            </div>
-                            <div>
-                                <p class="text-gray-400">Phone</p>
-                                <p>+</p>
-                            </div>
-                        </div>
-                    -->
                         <div class="flex items-center space-x-4">
                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-aurora-purple to-aurora-pink flex items-center justify-center">
                                 <i class="fas fa-map-marker-alt text-dark-bg"></i>
@@ -719,16 +484,7 @@ Mentored junior engineers, handled daily database backups (SQL & MongoDB), and m
                             </div>
                         </div>
                     </div>
-<!--
-                    <form class="space-y-4">
-                        <input type="text" placeholder="Your Name" class="w-full px-4 py-3 bg-dark-card border border-dark-border rounded-lg focus:outline-none focus:border-aurora-green">
-                        <input type="email" placeholder="Your Email" class="w-full px-4 py-3 bg-dark-card border border-dark-border rounded-lg focus:outline-none focus:border-aurora-green">
-                        <textarea placeholder="Your Message" rows="4" class="w-full px-4 py-3 bg-dark-card border border-dark-border rounded-lg focus:outline-none focus:border-aurora-green"></textarea>
-                        <button type="submit" class="w-full px-8 py-3 bg-gradient-to-r from-aurora-green to-aurora-blue rounded-lg text-dark-bg font-semibold hover:shadow-lg hover:shadow-aurora-green/50 transition transform hover:scale-105">
-                            Send Message
-                        </button>
-                    </form>
-                -->
+                    <!-- form disabled -->
                 </div>
             </div>
         </div>
@@ -742,13 +498,6 @@ Mentored junior engineers, handled daily database backups (SQL & MongoDB), and m
                 <a href="https://id.linkedin.com/in/ahmad-bayadi-abdillah" class="text-2xl mx-2 hover:text-aurora-blue transition"><i class="fab fa-linkedin"></i></a>
                 <a href="https://www.instagram.com/ahmad.bayadi/" class="text-2xl mx-2 hover:text-aurora-pink transition"><i class="fab fa-instagram"></i></a>
             </div>
-           <!-- <p class="text-gray-400">
-                © 2024 Alex Aurora. Built with
-                <a href="https://github.com/OSSPhilippines/freefolio" class="text-aurora-green hover:text-aurora-blue transition">
-                    Freefolio
-                </a>
-            </p>
-        -->
         </div>
     </footer>
 
@@ -767,36 +516,29 @@ Mentored junior engineers, handled daily database backups (SQL & MongoDB), and m
         });
 
         // Add animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -100px 0px' };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-slide-up');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('animate-slide-up');
             });
         }, observerOptions);
-
-        // Observe sections for animation
-        document.querySelectorAll('section').forEach(section => {
-            observer.observe(section);
-        });
+        document.querySelectorAll('section').forEach(section => observer.observe(section));
 
         // Smooth scroll for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
+        });
+
+        // Inisialisasi Vue (hook tersembunyi agar terdeteksi)
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.Vue && window.Vue.createApp) {
+                const { createApp } = window.Vue;
+                createApp({ data: () => ({ msg: 'Vue Active' }) }).mount('#vue-hook');
+            }
         });
     </script>
 </body>
